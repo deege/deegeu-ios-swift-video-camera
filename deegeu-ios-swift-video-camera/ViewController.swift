@@ -88,12 +88,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let dataPath = documentsDirectory.stringByAppendingPathComponent(saveFileName)
             videoData?.writeToFile(dataPath, atomically: false)
             
-            self.dismissViewControllerAnimated(true, completion: nil)
-            
         }
         
         imagePicker.dismissViewControllerAnimated(true, completion: {
             // Anything you want to happen when the user saves an video
+        })
+    }
+    
+    // Called when the user selects cancel
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        print("User canceled image")
+        dismissViewControllerAnimated(true, completion: {
+            // Anything you want to happen when the user selects cancel
         })
     }
     
