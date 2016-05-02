@@ -1,8 +1,10 @@
 # How to record and play video in iOS 9 and Swift 2.0
 
-The purpose of this repository is to supplement the "How to record and play video in iOS 9 and Swift 2.0" video with code, and to provide a simple starting point for building basic video functionality in your apps.
+The purpose of this repository is to supplement the [!"How to record and play video in iOS 9 and Swift 2.0"](http://www.deegeu.com/how-to-capture-video-in-ios-and-swift/) video with code, and to provide a simple starting point for building basic video functionality in your apps.
 
 The “How to record and play video in iOS 9 and Swift 2.0” video demonstrates recording a video, saving it to your documents directory, and the playing it back.
+
+[![How to capture video in iOS 9 and Swift 2.0](http://img.youtube.com/vi/VZzx0ZXtkg0/0.jpg)](http://www.youtube.com/watch?v=VZzx0ZXtkg0)
 
 The video uses Swift 2.0 and iOS 9
 
