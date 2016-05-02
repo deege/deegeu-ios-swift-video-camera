@@ -77,7 +77,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         if let pickedVideo:NSURL = (info[UIImagePickerControllerMediaURL] as? NSURL) {
             // Save video to the main photo album
-            let selectorToCall = Selector("videoWasSavedSuccessfully:didFinishSavingWithError:context:")
+            let selectorToCall = #selector(ViewController.videoWasSavedSuccessfully(_:didFinishSavingWithError:context:))
             UISaveVideoAtPathToSavedPhotosAlbum(pickedVideo.relativePath!, self, selectorToCall, nil)
             
             // Save the video to the app directory so we can play it later
