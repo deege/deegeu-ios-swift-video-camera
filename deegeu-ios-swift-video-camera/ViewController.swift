@@ -29,16 +29,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
 // MARK: Button handlers
     // Record a video
-    @IBAction func recordVideo(sender: AnyObject) {
-        if (UIImagePickerController.isSourceTypeAvailable(.Camera)) {
-            if UIImagePickerController.availableCaptureModesForCameraDevice(.Rear) != nil {
+    @IBAction func recordVideo(_ sender: AnyObject) {
+        if (UIImagePickerController.isSourceTypeAvailable(.camera)) {
+            if UIImagePickerController.availableCaptureModes(for: .rear) != nil {
                 
-                imagePicker.sourceType = .Camera
+                imagePicker.sourceType = .camera
                 imagePicker.mediaTypes = [kUTTypeMovie as String]
                 imagePicker.allowsEditing = false
                 imagePicker.delegate = self
                 
-                presentViewController(imagePicker, animated: true, completion: {})
+                present(imagePicker, animated: true, completion: {})
             } else {
                 postAlert("Rear camera doesn't exist", message: "Application cannot access the camera.")
             }
@@ -48,68 +48,67 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     // Play the video recorded for the app
-    @IBAction func playVideo(sender: AnyObject) {
+    @IBAction func playVideo(_ sender: AnyObject) {
         print("Play a video")
         
         // Find the video in the app's document directory
         let paths = NSSearchPathForDirectoriesInDomains(
-            NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-        let documentsDirectory: AnyObject = paths[0]
-        let dataPath = documentsDirectory.stringByAppendingPathComponent(saveFileName)
-        let videoAsset = (AVAsset(URL: NSURL(fileURLWithPath: dataPath)))
+            FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+        let documentsDirectory: URL = URL(fileURLWithPath: paths[0])
+        let dataPath = documentsDirectory.appendingPathComponent(saveFileName)
+        print(dataPath.absoluteString)
+        let videoAsset = (AVAsset(url: dataPath))
         let playerItem = AVPlayerItem(asset: videoAsset)
         
         // Play the video
         let player = AVPlayer(playerItem: playerItem)
         let playerViewController = AVPlayerViewController()
         playerViewController.player = player
-        
-        self.presentViewController(playerViewController, animated: true) {
+
+        self.present(playerViewController, animated: true) {
             playerViewController.player!.play()
         }
-        
     }
   
 // MARK: UIImagePickerControllerDelegate delegate methods
     // Finished recording a video
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         print("Got a video")
         
-        if let pickedVideo:NSURL = (info[UIImagePickerControllerMediaURL] as? NSURL) {
+        if let pickedVideo:URL = (info[UIImagePickerControllerMediaURL] as? URL) {
             // Save video to the main photo album
             let selectorToCall = #selector(ViewController.videoWasSavedSuccessfully(_:didFinishSavingWithError:context:))
-            UISaveVideoAtPathToSavedPhotosAlbum(pickedVideo.relativePath!, self, selectorToCall, nil)
+            UISaveVideoAtPathToSavedPhotosAlbum(pickedVideo.relativePath, self, selectorToCall, nil)
             
             // Save the video to the app directory so we can play it later
-            let videoData = NSData(contentsOfURL: pickedVideo)
+            let videoData = try? Data(contentsOf: pickedVideo)
             let paths = NSSearchPathForDirectoriesInDomains(
-                    NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.UserDomainMask, true)
-            let documentsDirectory: AnyObject = paths[0]
-            let dataPath = documentsDirectory.stringByAppendingPathComponent(saveFileName)
-            videoData?.writeToFile(dataPath, atomically: false)
-            
+                    FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)
+            let documentsDirectory: URL = URL(fileURLWithPath: paths[0])
+            let dataPath = documentsDirectory.appendingPathComponent(saveFileName)
+            try! videoData?.write(to: dataPath, options: [])
+            print("Saved to " + dataPath.absoluteString)
         }
         
-        imagePicker.dismissViewControllerAnimated(true, completion: {
+        imagePicker.dismiss(animated: true, completion: {
             // Anything you want to happen when the user saves an video
         })
     }
     
     // Called when the user selects cancel
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         print("User canceled image")
-        dismissViewControllerAnimated(true, completion: {
+        dismiss(animated: true, completion: {
             // Anything you want to happen when the user selects cancel
         })
     }
     
     // Any tasks you want to perform after recording a video
-    func videoWasSavedSuccessfully(video: String, didFinishSavingWithError error: NSError!, context: UnsafeMutablePointer<()>){
-        print("Video saved")
+    func videoWasSavedSuccessfully(_ video: String, didFinishSavingWithError error: NSError!, context: UnsafeMutableRawPointer){
         if let theError = error {
             print("An error happened while saving the video = \(theError)")
         } else {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            DispatchQueue.main.async(execute: { () -> Void in
                 // What you want to happen
             })
         }
@@ -118,11 +117,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
  
 // MARK: Utility methods for app
     // Utility method to display an alert to the user.
-    func postAlert(title: String, message: String) {
+    func postAlert(_ title: String, message: String) {
         let alert = UIAlertController(title: title, message: message,
-            preferredStyle: UIAlertControllerStyle.Alert)
-        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: nil))
-        self.presentViewController(alert, animated: true, completion: nil)
+            preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
