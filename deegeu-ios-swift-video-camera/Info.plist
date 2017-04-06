@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Uses photo library to demonstrate displaying video.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Uses media library to demonstrate displaying video.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Uses microphone to demonstrate recording video.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Uses camera to demonstrate recording video.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
